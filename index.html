@@ -200,9 +200,7 @@
               <h3>Выставка "Цвет в движении"</h3>
               <p>Дата: 20 мая 2025, Париж</p>
               <p>Присоединяйтесь к нашей выставке абстрактного искусства.</p>
-              <a
-                href="about.html"
-                class="btn btn-primary btn-sm"
+              <a href="https://afisha.yandex.ru/" class="btn btn-primary btn-sm"
                 >Узнать больше</a
               >
             </div>
@@ -210,9 +208,7 @@
               <h3>Мастер-класс по цифровой иллюстрации</h3>
               <p>Дата: 25 мая 2025, Барселона</p>
               <p>Научитесь создавать цифровые шедевры с экспертами.</p>
-              <a
-                href="about.html"
-                class="btn btn-primary btn-sm"
+              <a href="https://afisha.yandex.ru/" class="btn btn-primary btn-sm"
                 >Узнать больше</a
               >
             </div>
@@ -278,9 +274,7 @@
               <h3>Международная художественная ярмарка</h3>
               <p>Дата: 1 июня 2025, Нью-Йорк</p>
               <p>Представление работ художников со всего мира.</p>
-              <a
-                href="about.html"
-                class="btn btn-primary btn-sm"
+              <a href="https://afisha.yandex.ru/" class="btn btn-primary btn-sm"
                 >Узнать больше</a
               >
             </div>
@@ -316,7 +310,11 @@
           <div class="two-columns">
             <div class="column">
               <div class="button-group">
-                <a href="register.html" class="btn btn-primary btn-lg">
+                <a
+                  href="register.html"
+                  id="register-btn"
+                  class="btn btn-primary btn-lg"
+                >
                   Создать аккаунт
                   <i class="fas fa-arrow-right"></i>
                 </a>
@@ -519,11 +517,13 @@
         window.location.reload();
       });
 
-      const register_btn = document.querySelector("#register-btn");
+      const register_btns = document.querySelectorAll("#register-btn");
 
       if (localStorage.getItem("ArtOasis-token")) {
         header_authorize.style.display = "none";
-        register_btn.style.display = "none";
+        register_btns.forEach((el) => {
+          el.style.display = "none";
+        });
       } else {
         exit.style.display = "none";
       }
