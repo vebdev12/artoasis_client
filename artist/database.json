@@ -1,0 +1,31 @@
+{
+  "authors": [
+    {
+      "name": "Sophie Lemming",
+      "bio": "Современная художница, специализирующаяся на цифровой иллюстрации и природных мотивах.",
+      "avatarSrc": "./images/artstation/sophie-lem.jpg",
+      "artworkCount": 25,
+      "followers": 1500,
+      "email": "sophie@art.com",
+      "website": "https://sophieart.com"
+    },
+    {
+      "name": "Elena Petrova",
+      "bio": "Художник-абстракционист, известный своими яркими композициями.",
+      "avatarSrc": "./images/artstation/animesad.jpg",
+      "artworkCount": 48,
+      "followers": 1250,
+      "email": "elena@art.com",
+      "website": "https://elenapetrova.art"
+    },
+    {
+      "name": "Marcus Chen",
+      "bio": "Фотограф, специализирующийся на городских пейзажах.",
+      "avatarSrc": "./images/artstation/jane1.jpeg",
+      "artworkCount": 36,
+      "followers": 980,
+      "email": "marcus@photo.com",
+      "website": "https://marcuschen.photo"
+    }
+  ]
+}

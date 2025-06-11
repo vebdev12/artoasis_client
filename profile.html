@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artist Profile - ArtExchange</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Additional styles for profile page */
+      .profile-header {
+        position: relative;
+        margin-bottom: 2.5rem;
+      }
+
+      .profile-cover {
+        height: 15rem;
+        width: 100%;
+        overflow: hidden;
+        border-radius: var(--radius) var(--radius) 0 0;
+        background-color: var(--muted);
+      }
+
+      .profile-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .edit-cover {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+      }
+
+      .profile-info {
+        position: relative;
+        margin-top: -5rem;
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .profile-avatar {
+        width: 8rem;
+        height: 8rem;
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 4px solid var(--background);
+        background-color: var(--muted);
+        margin-bottom: 1rem;
+      }
+
+      .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .profile-title {
+        color: var(--muted-foreground);
+        margin-bottom: 0.5rem;
+      }
+
+      .profile-stats {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .profile-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+
+      .profile-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .profile-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .profile-about {
+        margin-bottom: 2rem;
+      }
+
+      .profile-about h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .profile-about p {
+        color: var(--muted-foreground);
+      }
+
+      .profile-tabs {
+        margin-bottom: 2.5rem;
+      }
+
+      .profile-tab-list {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .profile-tab {
+        padding: 0.75rem;
+        text-align: center;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .profile-tab.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+      }
+
+      .profile-tab-content {
+        display: none;
+        padding-top: 1.5rem;
+      }
+
+      .profile-tab-content.active {
+        display: block;
+      }
+
+      .collection-card {
+        border-radius: var(--radius);
+        overflow: hidden;
+        background-color: var(--card);
+        box-shadow: var(--shadow);
+      }
+
+      .collection-image {
+        aspect-ratio: 16/9;
+        overflow: hidden;
+      }
+
+      .collection-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .collection-content {
+        padding: 1rem;
+      }
+
+      .collection-title {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .collection-count {
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+
+      .about-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .about-section h3 {
+        font-size: 1.125rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .about-list {
+        color: var(--muted-foreground);
+      }
+
+      .about-list li {
+        margin-bottom: 0.5rem;
+      }
+
+      .edit-modal__bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        opacity: 0;
+        z-index: -1;
+
+        transition: all 0.3s;
+      }
+
+      .edit-modal__bg.active {
+        opacity: 1;
+        z-index: 999;
+      }
+
+      .edit-modal {
+        position: absolute;
+        width: 500px;
+        height: 700px;
+        background-color: var(--background);
+        color: var(--foreground);
+        border-radius: 20px;
+        padding: 27px 40px 50px 40px;
+      }
+
+      .edit-modal__inner {
+        height: 76%;
+        overflow-y: scroll;
+      }
+
+      .edit-modal__head {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 45px;
+      }
+
+      .edit-modal__haed-title {
+      }
+
+      .edit-modal__close {
+        margin: 15px;
+        width: 35px;
+        height: 35px;
+      }
+
+      .edit-modal__title {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        min-width: 70px;
+      }
+
+      .edit-modal__item {
+        display: flex;
+        gap: 0 20px;
+        align-items: start;
+        justify-content: start;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+      }
+
+      .edit-modal__upload {
+        border: 1px dashed var(--border);
+        border-radius: 7px;
+        padding: 5px 20px;
+        background-color: var(--background);
+        color: var(--foreground);
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .edit-modal__avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 100%;
+        object-fit: cover;
+      }
+
+      .edit-modal__input {
+        padding: 12px 15px;
+        border-radius: 5px;
+        width: 60%;
+        border: 1px solid var(--border);
+        justify-self: start;
+        background-color: var(--accent-light);
+        border: none;
+        color: var(--foreground);
+      }
+
+      .edit-modal__textarea {
+        padding: 15px;
+        border-radius: 5px;
+        background-color: var(--accent-light);
+        border: none;
+        width: 75%;
+        min-height: 60px;
+        max-height: 95px;
+        resize: vertical;
+        color: var(--foreground);
+      }
+
+      .edit-modal__textarea::placeholder {
+        font-size: 13px;
+      }
+
+      .edit-modal__footer {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      .edit-modal__btn {
+        width: 100px;
+        padding: 12px;
+        border-radius: 10px;
+        color: var(--foreground);
+      }
+
+      .edit-modal__btn.green {
+        background-color: var(--primary);
+        color: #fff;
+      }
+
+      .follows-modal__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 15px;
+      }
+      .follows-modal__item-inner {
+        display: flex;
+        align-items: center;
+        gap: 0 10px;
+      }
+      .follows-modal__profile-img {
+        width: 45px;
+        height: 45px;
+        border-radius: 100%;
+        object-fit: cover;
+      }
+
+      .follows-modal__item-name {
+        font-size: 15px;
+        font-weight: 500px;
+      }
+      .btn {
+      }
+      .btn-primary {
+      }
+
+      .subscription_link {
+        font-size: 13px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+      }
+
+      @media (min-width: 768px) {
+        .profile-info {
+          flex-direction: row;
+          align-items: flex-end;
+          padding: 0 2rem;
+        }
+
+        .profile-details {
+          margin-left: 1.5rem;
+        }
+
+        .profile-actions {
+          margin-left: auto;
+          margin-top: 0;
+        }
+
+        .profile-tab-list {
+          width: 400px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <header id="main-header" class="header">
+        <div class="header-container container">
+          <div class="header-left">
+            <a href="index.html" class="logo">
+              <span class="logo-text">Art Oasis</span>
+            </a>
+            <nav class="main-nav">
+              <a href="artworks.html" class="nav-link">Работы</a>
+              <a href="index.html#events" class="nav-link">Мероприятия</a>
+              <a href="artists.html" class="nav-link">Художники</a>
+              <a href="index.html#meetings" class="nav-link">Встречи</a>
+              <a href="index.html#blog" class="nav-link">Блог</a>
+              <a href="about.html" class="nav-link">О нас</a>
+            </nav>
+          </div>
+          <div class="header-right">
+            <button id="theme-toggle" class="theme-toggle">
+              <i class="fas fa-sun"></i>
+            </button>
+            <div class="header__profile-controls">
+              <a href="login.html" class="btn btn-outline">Войти</a>
+              <a href="register.html" class="btn btn-primary">Регистрация</a>
+            </div>
+            <a class="header__profile-name">name</a>
+            <button id="exit" style="margin-left: 10px">
+              <img
+                width="25px"
+                src="https://img.icons8.com/?size=100&id=61022&format=png&color=CD1010"
+                alt=""
+              />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="profile-header">
+          <div class="profile-cover">
+            <img
+              id="profile-banner"
+              src="https://via.placeholder.com/1200x240"
+              alt="Profile cover"
+            />
+            <button class="btn btn-sm edit-cover" id="edit-modal-trigger">
+              <i class="fas fa-edit"></i> Edit Profile
+            </button>
+          </div>
+
+          <div class="container">
+            <div class="profile-info">
+              <div class="profile-avatar">
+                <img
+                  src="https://via.placeholder.com/144"
+                  alt="Profile picture"
+                  class="profile-avatar__img"
+                />
+              </div>
+
+              <div class="profile-details">
+                <h1 class="profile-name">Elena Petrova</h1>
+                <p class="profile-title">
+                  Abstract Artist | Based in Barcelona
+                </p>
+                <div class="profile-stats">
+                  <div class="profile-stat" id="subscribers-modal-trigger">
+                    <i class="fas fa-users"></i>
+                    <span id="followers-count">1,250 Подписчиков</span>
+                  </div>
+                  <div class="profile-stat" id="follows-modal-trigger">
+                    <i class="fas fa-users"></i>
+                    <span id="follows-count">1,250 Подписок</span>
+                  </div>
+                  <div class="profile-stat">
+                    <i class="fas fa-th"></i>
+                    <span id="artworks-count">48 artworks</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="profile-actions">
+                <button class="btn btn-primary" id="follow-button">
+                  Follow
+                </button>
+                <button class="btn btn-outline" id="share-btn">
+                  <i class="fas fa-share-alt"></i> Share
+                </button>
+                <button
+                  class="btn btn-outline btn-icon"
+                  id="create-modal-trigger"
+                >
+                  <img
+                    width="20px"
+                    height="20px"
+                    src="https://img.icons8.com/?size=100&id=oF7jXJoq6nNX&format=png&color=1E293B"
+                    alt=""
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-content">
+          <div class="profile-about">
+            <h2>About</h2>
+            <p class="profile-about__text">
+              Contemporary artist specializing in vibrant abstract compositions.
+              My work explores the intersection of color, emotion, and movement.
+              I draw inspiration from nature, urban landscapes, and human
+              experiences. With over 10 years of professional experience, I've
+              exhibited my work in galleries across Europe and North America.
+              I'm passionate about connecting with other artists and sharing
+              techniques that push the boundaries of contemporary art.
+            </p>
+          </div>
+
+          <div class="profile-tabs">
+            <div class="profile-tab-list">
+              <div class="profile-tab active" data-tab="artwork">Artwork</div>
+              <div class="profile-tab" data-tab="favorites">Favorites</div>
+              <div class="profile-tab" data-tab="liked">Liked</div>
+              <div class="profile-tab" data-tab="about">About</div>
+            </div>
+
+            <div class="profile-tab-content active" id="artwork-tab">
+              <div class="artwork-grid" id="profile-artwork-grid">
+                <!-- Artwork cards will be inserted here by JavaScript -->
+              </div>
+
+              <div class="section-footer">
+                <button class="btn btn-outline" id="load-more">
+                  Load More
+                </button>
+              </div>
+            </div>
+
+            <div class="profile-tab-content" id="favorites-tab">
+              <!-- <div class="grid-3-cols">
+                <div class="collection-card">
+                  <div class="collection-image">
+                    <img
+                      src="https://via.placeholder.com/300x200"
+                      alt="Abstract Collection"
+                    />
+                  </div>
+                  <div class="collection-content">
+                    <h3 class="collection-title">Abstract Explorations</h3>
+                    <p class="collection-count">12 artworks</p>
+                  </div>
+                </div>
+
+                <div class="collection-card">
+                  <div class="collection-image">
+                    <img
+                      src="https://via.placeholder.com/300x200"
+                      alt="Color Studies"
+                    />
+                  </div>
+                  <div class="collection-content">
+                    <h3 class="collection-title">Color Studies</h3>
+                    <p class="collection-count">8 artworks</p>
+                  </div>
+                </div>
+
+                <div class="collection-card">
+                  <div class="collection-image">
+                    <img
+                      src="https://via.placeholder.com/300x200"
+                      alt="Experimental Techniques"
+                    />
+                  </div>
+                  <div class="collection-content">
+                    <h3 class="collection-title">Experimental Techniques</h3>
+                    <p class="collection-count">15 artworks</p>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+
+            <div class="profile-tab-content" id="liked-tab">
+              <div class="artwork-grid" id="liked-artwork-grid">
+                <!-- Liked artwork cards will be inserted here by JavaScript -->
+              </div>
+            </div>
+
+            <div class="profile-tab-content" id="about-tab">
+              <div class="about-section">
+                <h3>Bio</h3>
+                <p id="bio-text">
+                  Contemporary artist specializing in vibrant abstract
+                  compositions. My work explores the intersection of color,
+                  emotion, and movement. I draw inspiration from nature, urban
+                  landscapes, and human experiences. With over 10 years of
+                  professional experience, I've exhibited my work in galleries
+                  across Europe and North America.
+                </p>
+              </div>
+
+              <div class="about-section">
+                <h3>Education</h3>
+                <ul class="about-list">
+                  <li id="education-text">
+                    MFA in Fine Arts, Barcelona Institute of Arts, 2015
+                  </li>
+                </ul>
+              </div>
+
+              <div class="about-section">
+                <h3>Exhibitions</h3>
+                <ul class="about-list">
+                  <li id="exhibitions-text">
+                    Solo Exhibition "Color in Motion", Gallery Modern, Paris,
+                    2022
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="container footer-container">
+          <div class="footer-left">
+            <a href="index.html" class="logo">
+              <span class="logo-text">ArtExchange</span>
+            </a>
+            <p class="copyright">
+              &copy; <span id="current-year"></span> ArtExchange. All rights
+              reserved.
+            </p>
+          </div>
+          <div class="footer-right">
+            <a href="/terms" class="footer-link">Terms</a>
+            <a href="/privacy" class="footer-link">Privacy</a>
+            <a href="/contact" class="footer-link">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Templates for JavaScript insertion -->
+    <template id="artwork-card-template">
+      <div class="artwork-card">
+        <div class="artwork-image-container">
+          <img class="artwork-image" src="" alt="" />
+          <div class="artwork-overlay">
+            <div class="artwork-artist">
+              <div class="artist-avatar">
+                <img class="avatar-image" src="" alt="" />
+              </div>
+              <a class="artist-name artist-link" href=""></a>
+            </div>
+            <a class="artwork-title artwork-link" href=""></a>
+            <div class="artwork-tags"></div>
+            <div class="artwork-featured">Избранное</div>
+          </div>
+        </div>
+        <div class="artwork-content">
+          <h3 class="artwork-name"><a class="artwork-link" href=""></a></h3>
+          <p class="artwork-artist-name">
+            от <a class="artist-link" href=""></a>
+          </p>
+        </div>
+        <div class="artwork-comments">
+          <ul class="artwork-comments__list" id="comments-list"></ul>
+          <input
+            class="artwork-comments__input"
+            name=""
+            id=""
+            type="text"
+            placeholder="write a comment"
+          />
+        </div>
+        <div class="artwork-footer">
+          <div class="artwork-stats">
+            <div class="stat">
+              <i class="far fa-heart"></i> <span class="like-count"></span>
+            </div>
+            <button class="artwork-action comment-button">
+              <i class="far fa-comment"></i>
+              <span class="comment-count" style="margin-left: 5px"></span>
+            </button>
+          </div>
+          <div class="artwork-actions">
+            <button class="artwork-action like-button">
+              <i class="far fa-heart"></i>
+            </button>
+            <button class="artwork-action save-button">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <button class="artwork-action share-button">
+              <i class="fas fa-share"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div class="edit-modal__bg">
+      <div class="edit-modal">
+        <div class="edit-modal__head">
+          <img
+            src="https://via.placeholder.com/144"
+            alt="Profile picture"
+            class="edit-modal__avatar profile-avatar__img"
+          />
+          <h2 class="edit-modal__haed-title">User data</h2>
+          <button class="edit-modal__close" id="edit-modal__close">
+            <img
+              width="40px"
+              height="40px"
+              src="https://img.icons8.com/?size=100&id=6483&format=png&color=3B2041"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="edit-modal__inner">
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Avatar</span>
+            <label class="edit-modal__upload" for="invisible-file-upload"
+              >Pick file</label
+            >
+            <input
+              type="file"
+              name="image"
+              id="invisible-file-upload"
+              style="display: none"
+            />
+          </div>
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Banner</span>
+            <label class="edit-modal__upload" for="banner-input"
+              >Pick file</label
+            >
+            <input
+              type="file"
+              name="banner"
+              id="banner-input"
+              style="display: none"
+            />
+          </div>
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Name</span>
+            <input
+              class="edit-modal__input"
+              type="text"
+              placeholder="your name"
+              id="edit-modal-input"
+              name="name"
+            />
+          </div>
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">About</span>
+            <textarea
+              class="edit-modal__textarea"
+              placeholder="write some text..."
+              id="edit-modal-input"
+              name="description"
+            ></textarea>
+          </div>
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Bio</span>
+            <textarea
+              class="edit-modal__textarea"
+              placeholder="write some text..."
+              id="edit-modal-input"
+              name="bio"
+            ></textarea>
+          </div>
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Education</span>
+            <textarea
+              class="edit-modal__textarea"
+              placeholder="write some text..."
+              id="edit-modal-input"
+              name="Education"
+            ></textarea>
+          </div>
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Exhibitions</span>
+            <textarea
+              class="edit-modal__textarea"
+              placeholder="write some text..."
+              id="edit-modal-input"
+              name="Exhibitions"
+            ></textarea>
+          </div>
+        </div>
+        <div class="edit-modal__footer">
+          <button class="edit-modal__btn green" id="edit-modal-submit">
+            Save
+          </button>
+          <button class="edit-modal__btn grey" id="edit-modal__close">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="create-modal-bg edit-modal__bg">
+      <div class="edit-modal" style="height: 360px">
+        <div class="edit-modal__head">
+          <h2 class="edit-modal__haed-title">Create new post</h2>
+          <button class="edit-modal__close" id="crete-modal-close">
+            <img
+              width="40px"
+              height="40px"
+              src="https://img.icons8.com/?size=100&id=6483&format=png&color=3B2041"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="edit-modal__inner" style="height: 50%; overflow: hidden">
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Image</span>
+            <label class="edit-modal__upload" for="create-modal-img"
+              >Pick file</label
+            >
+            <input
+              type="file"
+              name="image"
+              id="create-modal-img"
+              style="display: none"
+            />
+          </div>
+          <div class="edit-modal__item">
+            <span class="edit-modal__title">Title</span>
+            <input
+              class="edit-modal__input"
+              type="text"
+              placeholder="Post title"
+              id="create-modal-input"
+              name="title"
+            />
+          </div>
+        </div>
+        <div class="edit-modal__footer">
+          <button class="edit-modal__btn green" id="create-modal-submit">
+            Post
+          </button>
+          <button class="edit-modal__btn grey" id="crete-modal-close">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="follow-modal-bg edit-modal__bg">
+      <div class="edit-modal" style="height: 360px">
+        <div class="edit-modal__head" style="margin-bottom: 10px;">
+          <h2 class="edit-modal__haed-title">Подписки</h2>
+          <button class="edit-modal__close" id="follow-modal-close">
+            <img
+              width="40px"
+              height="40px"
+              src="https://img.icons8.com/?size=100&id=6483&format=png&color=3B2041"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="edit-modal__inner" style="height: 90%; overflow: scroll" id="follows-modal-inner">
+          <div class="follows-modal__item">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subscribers-modal-bg edit-modal__bg">
+      <div class="edit-modal" style="height: 360px">
+        <div class="edit-modal__head" style="margin-bottom: 10px;">
+          <h2 class="edit-modal__haed-title">Подписчики</h2>
+          <button class="edit-modal__close" id="subscribers-modal-close">
+            <img
+              width="40px"
+              height="40px"
+              src="https://img.icons8.com/?size=100&id=6483&format=png&color=3B2041"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="edit-modal__inner" style="height: 90%; overflow: scroll" id="subscribers-modal-inner">
+          <div class="subscribers-modal__item">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("ArtOasis-user"));
+      const header_authorize = document.querySelector(
+        ".header__profile-controls"
+      );
+      const exit = document.querySelector("#exit");
+
+      exit.addEventListener("click", () => {
+        localStorage.removeItem("ArtOasis-token");
+        localStorage.removeItem("ArtOasis-user");
+        window.location.reload();
+      });
+
+      if (localStorage.getItem("ArtOasis-token")) {
+        header_authorize.style.display = "none";
+      } else {
+        exit.style.display = "none";
+      }
+
+      const name_node = document.querySelector(".header__profile-name");
+      name_node.innerHTML = user?.name;
+      name_node.href = `profile.html?id=${user.id}`;
+    </script>
+
+    <script>
+      // DOM Elements
+      const themeToggle = document.getElementById("theme-toggle");
+      const header = document.getElementById("main-header");
+      const profileTabs = document.querySelectorAll(".profile-tab");
+      const tabContents = document.querySelectorAll(".profile-tab-content");
+      const followButton = document.getElementById("follow-button");
+      const profileArtworkGrid = document.getElementById(
+        "profile-artwork-grid"
+      );
+      const likedArtworkGrid = document.getElementById("liked-artwork-grid");
+      const loadMoreButton = document.getElementById("load-more");
+      const currentYearElement = document.getElementById("current-year");
+
+      // Sample Data - Artist's Artwork
+      const artistArtworks = [
+        {
+          title: "Abstract Harmony",
+          artist: "Elena Petrova",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 128,
+          comments: 32,
+          tags: ["Abstract", "Colorful"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+        {
+          title: "Cosmic Dreams",
+          artist: "Elena Petrova",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 95,
+          comments: 18,
+          tags: ["Space", "Digital"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+        {
+          title: "Urban Reflections",
+          artist: "Elena Petrova",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 210,
+          comments: 45,
+          tags: ["Urban", "Abstract"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+        {
+          title: "Emotional Landscape",
+          artist: "Elena Petrova",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 87,
+          comments: 12,
+          tags: ["Abstract", "Emotional"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+        {
+          title: "Color Symphony",
+          artist: "Elena Petrova",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 156,
+          comments: 28,
+          tags: ["Color", "Abstract"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+        {
+          title: "Geometric Passion",
+          artist: "Elena Petrova",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 112,
+          comments: 24,
+          tags: ["Geometric", "Abstract"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+      ];
+
+      // Sample Data - Liked Artwork
+      const likedArtworks = [
+        {
+          title: "Urban Dreams",
+          artist: "Marcus Chen",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 95,
+          comments: 18,
+          tags: ["Photography", "Urban"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+        {
+          title: "Nature's Whisper",
+          artist: "Sophia Williams",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 210,
+          comments: 45,
+          tags: ["Digital", "Nature"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+        {
+          title: "Digital Landscape",
+          artist: "Alex Johnson",
+          imageSrc: "https://via.placeholder.com/300x400",
+          likes: 78,
+          comments: 14,
+          tags: ["Digital", "Landscape"],
+          artistAvatar: "https://via.placeholder.com/100",
+        },
+      ];
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        // Set current year in footer
+        currentYearElement.textContent = new Date().getFullYear();
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem("theme");
+        if (
+          savedTheme === "dark" ||
+          (!savedTheme &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          document.documentElement.classList.add("dark");
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        // Render artwork
+        renderArtworks(artistArtworks, profileArtworkGrid);
+        renderArtworks(likedArtworks, likedArtworkGrid);
+
+        // Initialize observers for scroll animations
+        initScrollObservers();
+      });
+
+      // Theme Toggle
+      themeToggle.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        themeToggle.innerHTML = isDark
+          ? '<i class="fas fa-moon"></i>'
+          : '<i class="fas fa-sun"></i>';
+      });
+
+      // Header Scroll Effect
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+
+      // Tab Switching
+      profileTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const tabId = tab.dataset.tab;
+
+          // Update active tab
+          profileTabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          // Update active content
+          tabContents.forEach((content) => content.classList.remove("active"));
+          document.getElementById(`${tabId}-tab`).classList.add("active");
+        });
+      });
+
+      // Follow Button
+      followButton.addEventListener("click", function () {
+        const isFollowing = this.classList.toggle("following");
+
+        if (isFollowing) {
+          this.textContent = "Following";
+          this.classList.add("btn-outline");
+          this.classList.remove("btn-primary");
+        } else {
+          this.textContent = "Follow";
+          this.classList.add("btn-primary");
+          this.classList.remove("btn-outline");
+        }
+      });
+
+      // Load More Button
+      loadMoreButton.addEventListener("click", function () {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        this.disabled = true;
+
+        // Simulate loading more artwork
+        setTimeout(() => {
+          this.innerHTML = "Load More";
+          this.disabled = false;
+          alert("No more artwork to load");
+        }, 1500);
+      });
+
+      // Render Artworks
+      function renderArtworks(artworks, container) {
+        container.innerHTML = "";
+
+        artworks?.forEach((artwork, index) => {
+          const card = document
+            .getElementById("artwork-card-template")
+            .content.cloneNode(true);
+          const artworkCard = card.querySelector(".artwork-card");
+
+          // Set animation delay
+          artworkCard.style.animationDelay = `${index * 0.1}s`;
+
+          // Set image and links
+          card.querySelector(".artwork-image").src = artwork.imageSrc;
+          card.querySelector(".artwork-image").alt = artwork.title;
+
+          const artworkLinks = card.querySelectorAll(".artwork-link");
+          artworkLinks.forEach((link) => {
+            link.href = `/profile/${artwork.artistId}`;
+            link.textContent = artwork.title;
+          });
+
+          const artistLinks = card.querySelectorAll(".artist-link");
+          artistLinks.forEach((link) => {
+            link.href = `profile.html?id=${artwork.artistId}`;
+            link.textContent = artwork.artist;
+          });
+
+          // Set avatar
+          card.querySelector(".avatar-image").src = artwork.artistAvatar;
+          card.querySelector(".avatar-image").alt = artwork.artist;
+
+          // Set stats
+          card.querySelector(".like-count").textContent = artwork.likes;
+          card.querySelector(".comment-count").textContent =
+            artwork.comments.length;
+
+          // Add tags
+          const tagsContainer = card.querySelector(".artwork-tags");
+          artwork.tags.forEach((tag) => {
+            const tagElement = document.createElement("span");
+            tagElement.className = "artwork-tag";
+            tagElement.textContent = tag;
+            tagsContainer.appendChild(tagElement);
+          });
+
+          // Add event listeners
+          const likeButton = card.querySelector(".like-button");
+
+          isLiked_request(artwork.id)
+            .then((res) => {
+              if (res.isLiked) {
+                likeButton.classList.add("active");
+                isLiked = true;
+              }
+
+              onLikesInitialize(res.isLiked);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+
+          const onLikesInitialize = (isLiked) => {
+            likeButton.addEventListener("click", function () {
+              this.classList.toggle("active");
+              const likeCount = card.querySelector(".like-count");
+
+              console.log(card);
+
+              if (this.classList.contains("active")) {
+                this.innerHTML = '<i class="fas fa-heart"></i>';
+              } else {
+                this.innerHTML = '<i class="far fa-heart"></i>';
+              }
+
+              if (isLiked) {
+                unLikePosts_request(artwork.id)
+                  .then((res) => {
+                    console.log(res);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }
+
+              if (isLiked === false) {
+                likePosts_request(artwork.id)
+                  .then((res) => {
+                    console.log(res);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }
+            });
+          };
+
+          const saveButton = card.querySelector(".save-button");
+
+          isSaved_request(artwork.id)
+            .then((res) => {
+              if (res.isFavorite) {
+                saveButton.classList.add("active");
+              }
+
+              onSavesInitialized(res.isFavorite);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+
+          const onSavesInitialized = (isFavorite) => {
+            saveButton.addEventListener("click", function () {
+              this.classList.toggle("active");
+              if (this.classList.contains("active")) {
+                this.innerHTML = '<i class="fas fa-bookmark"></i>';
+              } else {
+                this.innerHTML = '<i class="far fa-bookmark"></i>';
+              }
+
+              if (isFavorite) {
+                unsave_request(artwork.id)
+                  .then((res) => {
+                    console.log(res);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              } else {
+                save_request(artwork.id)
+                  .then((res) => {
+                    console.log(res);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }
+            });
+          };
+
+          const shareButton = card.querySelector(".share-button");
+          shareButton.addEventListener("click", function () {
+            const url = `${window.location.origin}/artoasis_client/artwork.html?id=${artwork.id}`;
+
+            navigator.clipboard.writeText(url).then(() => {
+              alert("Link copied to clipboard!");
+            });
+          });
+
+          const commentsButton = card.querySelector(".comment-button");
+          const comments = card.querySelector(".artwork-comments");
+          const comments_list = card.querySelector(".artwork-comments__list");
+          const comments_input = card.querySelector(".artwork-comments__input");
+          const comments_count = card.querySelector(".comment-count");
+
+          const setComment = (author, text) => {
+            comments_list.innerHTML += `
+            <li class="artwork-comments__item" id="comments-item">
+              <span class="artwork-comments__item-name" id="comments-name"
+                >${author}:</span
+              >
+              <span class="artwork-comments__item-text" id="comments-text"
+                >${text}
+              </span>
+            </li>`;
+          };
+
+          if (artwork.comments.length > 0) {
+            artwork.comments.forEach((comment) => {
+              setComment(comment.User.name, comment.text);
+            });
+          }
+
+          commentsButton.addEventListener("click", () => {
+            comments.classList.toggle("active");
+          });
+
+          comments_input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              add_comment_request({ postId: artwork.id, text: e.target.value })
+                .then((res) => {
+                  setComment(
+                    JSON.parse(localStorage.getItem("ArtOasis-user")).name,
+                    res.text
+                  );
+                  comments_count.textContent =
+                    parseInt(comments_count.textContent) + 1;
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+
+              e.target.value = "";
+            }
+          });
+
+          container.appendChild(card);
+        });
+      }
+
+      // Initialize Scroll Observers
+      function initScrollObservers() {
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: "0px 0px -50px 0px",
+        };
+
+        const artworkObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("animate");
+              artworkObserver.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        // Observe artwork cards
+        setTimeout(() => {
+          document.querySelectorAll(".artwork-card").forEach((card) => {
+            artworkObserver.observe(card);
+          });
+        }, 100);
+      }
+    </script>
+
+    <script src="./scripts/setFile.js"></script>
+    <script src="./scripts/request.js"></script>
+    <script src="./scripts/service.js"></script>
+    <script src="./scripts/profile.js"></script>
+    <script src="./scripts/unauthorized.js"></script>
+    <script src="./scripts/auth.js"></script>
+    <script src="./scripts/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>О нас — Art Oasis</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .about-section {
+        padding: 60px 20px;
+        background: rgba(99, 102, 241, 0.1);
+        text-align: center;
+      }
+      .about-section h1 {
+        font-size: 36px;
+        margin-bottom: 40px;
+      }
+      .about-section p {
+        font-size: 18px;
+        max-width: 800px;
+        margin: 0 auto 30px;
+      }
+      .team-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+      }
+      .team-member {
+        background: #a992d4;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        transition: transform 0.3s;
+      }
+      .team-member:hover {
+        transform: translateY(-5px);
+      }
+      .team-member img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 10px;
+      }
+      .team-member h3 {
+        margin: 10px 0 5px;
+        font-size: 20px;
+      }
+      .team-member span {
+        font-size: 14px;
+        color: #f3f1f1;
+      }
+
+      .about__accordion {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        transition: all 0.3s;
+        margin-bottom: 70px;
+      }
+
+      .about__inner {
+        max-width: 700px;
+      }
+
+      .about__item {
+        margin-bottom: 20px;
+      }
+
+      .about__item-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--accent-light);
+        padding: 20px 15px;
+        border-radius: 15px;
+      }
+
+      .about__item-body {
+        display: none;
+        background-color: var(--accent-light);
+        padding: 20px 15px;
+        border-radius: 15px;
+        margin-top: 10px;
+      }
+
+      .about__item.active .about__item-body {
+        display: block;
+      }
+
+      .about__item-header__img {
+        transition: all 0.3s;
+      }
+
+      .about__item.active .about__item-header__img {
+        transform: rotate(180deg);
+        transition: all 0.3s;
+      }
+
+      .about__item-header__title {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .about__item-body__text {
+        font-size: 16px;
+        font-weight: 300;
+        text-align-last: left;
+        max-width: fit-content !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="main-header" class="header">
+      <div class="header-container container">
+        <div class="header-left">
+          <a href="index.html" class="logo">
+            <span class="logo-text">Art Oasis</span>
+          </a>
+          <nav class="main-nav">
+            <a href="artworks.html" class="nav-link">Работы</a>
+            <a href="index.html#events" class="nav-link">Мероприятия</a>
+            <a href="artists.html" class="nav-link">Художники</a>
+            <a href="index.html#meetings" class="nav-link">Встречи</a>
+            <a href="index.html#blog" class="nav-link">Блог</a>
+            <a href="about.html" class="nav-link">О нас</a>
+          </nav>
+        </div>
+        <div class="header-right">
+          <button id="theme-toggle" class="theme-toggle">
+            <i class="fas fa-sun"></i>
+          </button>
+          <div class="header__profile-controls">
+            <a href="login.html" class="btn btn-outline">Войти</a>
+            <a href="register.html" class="btn btn-primary">Регистрация</a>
+          </div>
+          <a class="header__profile-name">name</a>
+          <button id="exit" style="margin-left: 10px">
+            <img
+              width="25px"
+              src="https://img.icons8.com/?size=100&id=61022&format=png&color=CD1010"
+              alt=""
+            />
+          </button>
+        </div>
+      </div>
+    </header>
+    <main class="about-section">
+      <h1>О нас</h1>
+
+      <div class="about__accordion">
+        <div class="about__inner">
+          <div class="about__item">
+            <div class="about__item-header">
+              <h3 class="about__item-header__title">
+                Art Oasis: Платформа для молодых талантов
+              </h3>
+              <img
+                width="25px"
+                class="about__item-header__img"
+                src="https://img.icons8.com/?size=100&id=39786&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+            <div class="about__item-body">
+              <p class="about__item-body__text">
+                Art Oasis — это онлайн-платформа, созданная с искренней целью
+                поддержки молодых художников и творческих людей, стремящихся
+                заявить о себе в мире искусства. Наша миссия — объединить
+                талантливых авторов в едином, динамичном и интерактивном
+                онлайн-пространстве, где они могут не только делиться своими
+                уникальными работами, но и находить ценное вдохновение,
+                конструктивную критику и, конечно же, заслуженное признание.
+              </p>
+            </div>
+          </div>
+          <div class="about__item">
+            <div class="about__item-header">
+              <h3 class="about__item-header__title">
+                Экосистема для развития и продвижения художника
+              </h3>
+              <img
+                width="25px"
+                class="about__item-header__img"
+                src="https://img.icons8.com/?size=100&id=39786&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+            <div class="about__item-body">
+              <p class="about__item-body__text">
+                Art Oasis — это не просто галерея, это полноценная экосистема,
+                разработанная с учетом потребностей современного художника. Мы
+                предоставляем широкий спектр инструментов и ресурсов,
+                способствующих развитию и продвижению таланта. На платформе
+                можно создавать персональные профили с подробным описанием
+                творческого пути, выставлять свои работы в высоком разрешении,
+                участвовать в тематических конкурсах и челленджах, получать
+                обратную связь от других художников и искусствоведов, а также
+                продавать свои произведения искусства напрямую коллекционерам и
+                ценителям.
+              </p>
+            </div>
+          </div>
+          <div class="about__item">
+            <div class="about__item-header">
+              <h3 class="about__item-header__title">
+                Поддерживающее сообщество и возможности для обучения
+              </h3>
+              <img
+                width="25px"
+                class="about__item-header__img"
+                src="https://img.icons8.com/?size=100&id=39786&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+            <div class="about__item-body">
+              <p class="about__item-body__text">
+                Art Oasis — это не просто галерея, это полноценная экосистема,
+                разработанная с учетом потребностей современного художника. Мы
+                предоставляем широкий спектр инструментов и ресурсов,
+                способствующих развитию и продвижению таланта. На платформе
+                можно создавать персональные профили с подробным описанием
+                творческого пути, выставлять свои работы в высоком разрешении,
+                участвовать в тематических конкурсах и челленджах, получать
+                обратную связь от других художников и искусствоведов, а также
+                продавать свои произведения искусства напрямую коллекционерам и
+                ценителям.
+              </p>
+            </div>
+          </div>
+          <div class="about__item">
+            <div class="about__item-header">
+              <h3 class="about__item-header__title">
+                Мост в профессиональный арт-мир
+              </h3>
+              <img
+                width="25px"
+                class="about__item-header__img"
+                src="https://img.icons8.com/?size=100&id=39786&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+            <div class="about__item-body">
+              <p class="about__item-body__text">
+                Кроме того, Art Oasis сотрудничает с различными галереями,
+                арт-дилерами и кураторами, предлагая молодым художникам
+                возможности для выставок и участия в реальных арт-проектах. Мы
+                стремимся стать надежным мостом между начинающими талантами и
+                профессиональным арт-миром, помогая им сделать первые шаги к
+                успешной карьере.
+              </p>
+            </div>
+          </div>
+          <div class="about__item">
+            <div class="about__item-header">
+              <h3 class="about__item-header__title">
+                Присоединяйтесь к Art Oasis!
+              </h3>
+              <img
+                width="25px"
+                class="about__item-header__img"
+                src="https://img.icons8.com/?size=100&id=39786&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+            <div class="about__item-body">
+              <p class="about__item-body__text">
+                В Art Oasis каждый может найти что-то для себя, независимо от
+                уровня мастерства и направления творчества. Присоединяйтесь к
+                нашему сообществу, чтобы делиться своим искусством,
+                вдохновляться, учиться и расти вместе с нами! Мы верим, что
+                каждый талант заслуживает быть увиденным и оцененным, и Art
+                Oasis — идеальное место для этого.
+              </p>
+            </div>
+          </div>
+          <div class="about__item">
+            <div class="about__item-header">
+              <h3 class="about__item-header__title">
+                Планы на будущее: Искусственный интеллект, NFT и глобальное
+                сотрудничество
+              </h3>
+              <img
+                width="25px"
+                class="about__item-header__img"
+                src="https://img.icons8.com/?size=100&id=39786&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+            <div class="about__item-body">
+              <p class="about__item-body__text">
+                Мы также планируем развивать следующие направления:
+                <li style="list-style: circle">
+                  Интеграция с технологиями искусственного интеллекта: для
+                  помощи в создании работ, анализе трендов и рекомендациях для
+                  художников.
+                </li>
+                <li style="list-style: circle">
+                  Развитие NFT-направления: для предоставления художникам новых
+                  возможностей монетизации своего творчества.
+                </li>
+                <li style="list-style: circle">
+                  Расширение географии сотрудничества: привлечение художников и
+                  партнеров со всего мира.
+                </li>
+                <li style="list-style: circle">
+                  Создание мобильного приложения: для удобного доступа к
+                  платформе с любого устройства.
+                </li>
+              </p>
+            </div>
+          </div>
+          <div class="about__item">
+            <div class="about__item-header">
+              <h3 class="about__item-header__title">
+                Инвестиция в будущее искусства
+              </h3>
+              <img
+                width="25px"
+                class="about__item-header__img"
+                src="https://img.icons8.com/?size=100&id=39786&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+            <div class="about__item-body">
+              <p class="about__item-body__text">
+                Art Oasis — это не просто платформа, это инвестиция в будущее
+                искусства, где каждый талант имеет шанс раскрыться и засиять во
+                всей красе.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-bottom: 20px">Наша команда</h2>
+      <div class="team-container">
+        <div class="team-member">
+          <img src="images/artstation/anime2.jpg" alt="member" />
+          <h3>Алексей Смирнов</h3>
+          <span>Frontend-разработчик</span>
+        </div>
+        <div class="team-member">
+          <img src="images/artstation/anime2.jpg" alt="member" />
+          <h3>Елена Кузнецова</h3>
+          <span>Дизайнер</span>
+        </div>
+        <div class="team-member">
+          <img src="images/artstation/anime2.jpg" alt="member" />
+          <h3>Игорь Новиков</h3>
+          <span>Backend-разработчик</span>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("ArtOasis-user"));
+      const header_authorize = document.querySelector(
+        ".header__profile-controls"
+      );
+      const exit = document.querySelector("#exit");
+
+      exit.addEventListener("click", () => {
+        localStorage.removeItem("ArtOasis-token");
+        localStorage.removeItem("ArtOasis-user");
+        window.location.reload();
+      });
+
+      if (localStorage.getItem("ArtOasis-token")) {
+        header_authorize.style.display = "none";
+      } else {
+        exit.style.display = "none";
+      }
+
+      const name_node = document.querySelector(".header__profile-name");
+      name_node.innerHTML = user?.name;
+      name_node.href = `profile.html?id=${user.id}`;
+    </script>
+
+    <script src="./scripts/unauthorized.js"></script>
+    <script src="./scripts/about.js"></script>
+  </body>
+</html>

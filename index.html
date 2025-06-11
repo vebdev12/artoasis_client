@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Art Oasis - Платформа для обмена художественными работами</title>
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Подключаем библиотеку XLSX -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Подключаем наш скрипт -->
+    <script type="text/javascript" defer>
+      // Инициализация переменных
+      var gk_isXlsx = false;
+      var gk_xlsxFileLookup = {};
+      var gk_fileData = {};
+
+      // Ждём, пока вся страница загрузится
+      document.addEventListener("DOMContentLoaded", function () {
+        // Функция проверки пустой ячейки
+        function filledCell(cell) {
+          return cell !== "" && cell != null;
+        }
+
+        // Функция загрузки данных из файла
+        function loadFileData(filename) {
+          if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+              var workbook = XLSX.read(gk_fileData[filename], {
+                type: "base64",
+              });
+              var firstSheetName = workbook.SheetNames[0];
+              var worksheet = workbook.Sheets[firstSheetName];
+
+              // Конвертация в JSON
+              var jsonData = XLSX.utils.sheet_to_json(worksheet, {
+                header: 1,
+                blankrows: false,
+                defval: "",
+              });
+              var filteredData = jsonData.filter((row) => row.some(filledCell));
+
+              // Находим индекс заголовка
+              var headerRowIndex = filteredData.findIndex(
+                (row, index) =>
+                  row.filter(filledCell).length >=
+                  filteredData[index + 1]?.filter(filledCell).length
+              );
+
+              if (headerRowIndex === -1 || headerRowIndex > 25) {
+                headerRowIndex = 0;
+              }
+
+              // Преобразование в CSV
+              var csv = XLSX.utils.aoa_to_sheet(
+                filteredData.slice(headerRowIndex)
+              );
+              csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+
+              // Выводим в консоль (или на страницу)
+              console.log(csv);
+              return csv;
+            } catch (e) {
+              console.error("Ошибка при загрузке данных: ", e);
+              return "";
+            }
+          }
+          return gk_fileData[filename] || "";
+        }
+      });
+    </script>
+  </head>
+  <body class="app-container">
+    <!-- Header -->
+    <header id="main-header" class="header">
+      <div class="header-container container">
+        <div class="header-left">
+          <a href="index.html" class="logo">
+            <span class="logo-text">Art Oasis</span>
+          </a>
+          <nav class="main-nav">
+            <a href="artworks.html" class="nav-link">Работы</a>
+            <a href="index.html#events" class="nav-link">Мероприятия</a>
+            <a href="artists.html" class="nav-link">Художники</a>
+            <a href="index.html#meetings" class="nav-link">Встречи</a>
+            <a href="index.html#blog" class="nav-link">Блог</a>
+            <a href="about.html" class="nav-link">О нас</a>
+          </nav>
+        </div>
+        <div class="header-right">
+          <button id="theme-toggle" class="theme-toggle">
+            <i class="fas fa-sun"></i>
+          </button>
+          <div class="header__profile-controls">
+            <a href="login.html" class="btn btn-outline">Войти</a>
+            <a href="register.html" class="btn btn-primary">Регистрация</a>
+          </div>
+          <a class="header__profile-name">name</a>
+          <button id="exit" style="margin-left: 10px">
+            <img
+              width="25px"
+              src="https://img.icons8.com/?size=100&id=61022&format=png&color=CD1010"
+              alt=""
+            />
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-container container">
+          <div class="hero-content">
+            <div class="hero-text">
+              <h1 class="hero-title">
+                Поделитесь своим творческим видением с миром
+              </h1>
+              <p class="hero-description">
+                Присоединяйтесь к нашему сообществу художников и творцов.
+                Загружайте, открывайте и обменивайтесь работами и проектами.
+              </p>
+              <div class="hero-buttons">
+                <a href="artworks.html" class="btn btn-primary btn-lg">
+                  Исследовать работы
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+                <a
+                  href="register.html"
+                  class="btn btn-outline btn-lg"
+                  id="register-btn"
+                >
+                  Создать аккаунт
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+            <div class="hero-image">
+              <div class="image-container">
+                <img
+                  src="https://artoasis-server.onrender.com/public\images\1749323283401-загруженное (4).jpeg"
+                  alt="Hero Image"
+                  class="rounded-image"
+                />
+                <div class="accent-circle accent-circle-1"></div>
+                <div class="accent-circle accent-circle-2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Раздел творческого вдохновения (Галерея) -->
+      <section id="inspiration" class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Раздел творческого вдохновения</h2>
+            <p class="section-description">
+              Откройте для себя последние и самые популярные работы нашего
+              сообщества
+            </p>
+          </div>
+          <div id="artwork-grid" class="artwork-grid"></div>
+          <div id="no-results" class="no-results" style="display: none">
+            <p>Не найдено работ, соответствующих вашим критериям</p>
+            <button id="reset-filters" class="btn btn-ghost">
+              Сбросить фильтры
+            </button>
+          </div>
+          <div class="section-footer">
+            <a href="artworks.html" class="btn btn-outline"
+              >Смотреть больше работ</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Список будущих мероприятий -->
+      <section id="events" class="section section-alt">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Список будущих мероприятий</h2>
+            <p class="section-description">
+              Узнайте о предстоящих выставках, мастер-классах и творческих
+              событиях
+            </p>
+          </div>
+          <div class="events-grid">
+            <div class="event-card">
+              <h3>Выставка "Цвет в движении"</h3>
+              <p>Дата: 20 мая 2025, Париж</p>
+              <p>Присоединяйтесь к нашей выставке абстрактного искусства.</p>
+              <a
+                href="about.html"
+                class="btn btn-primary btn-sm"
+                >Узнать больше</a
+              >
+            </div>
+            <div class="event-card">
+              <h3>Мастер-класс по цифровой иллюстрации</h3>
+              <p>Дата: 25 мая 2025, Барселона</p>
+              <p>Научитесь создавать цифровые шедевры с экспертами.</p>
+              <a
+                href="about.html"
+                class="btn btn-primary btn-sm"
+                >Узнать больше</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Общение с художниками -->
+      <section id="artists" class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Общение с художниками</h2>
+            <p class="section-description">
+              Познакомьтесь с талантливыми создателями работ
+            </p>
+          </div>
+          <div id="artists-grid" class="artists-grid"></div>
+          <div class="section-footer">
+            <a href="artists.html" class="btn btn-outline"
+              >Открыть больше художников</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Раздел творческих встреч -->
+      <section id="meetings" class="section section-alt">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Раздел творческих встреч</h2>
+            <p class="section-description">
+              Присоединяйтесь к встречам, чтобы обсудить искусство и вдохновение
+            </p>
+          </div>
+          <div class="meetings-grid">
+            <div class="meeting-card">
+              <h3>Встреча: Обсуждение абстрактного искусства</h3>
+              <p>Дата: 22 мая 2025, Онлайн</p>
+              <p>Поделитесь своими идеями и узнайте новое.</p>
+              <a href="#" class="btn btn-primary btn-sm">Присоединиться</a>
+            </div>
+            <div class="meeting-card">
+              <h3>Встреча: Фотография в городе</h3>
+              <p>Дата: 28 мая 2025, Нью-Йорк</p>
+              <p>Обсудим уличную фотографию.</p>
+              <a href="#" class="btn btn-primary btn-sm">Присоединиться</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Раздел списка будущих событий -->
+      <section id="upcoming" class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Список будущих событий</h2>
+            <p class="section-description">
+              Не пропустите важные события нашего сообщества
+            </p>
+          </div>
+          <div class="events-grid">
+            <div class="event-card">
+              <h3>Международная художественная ярмарка</h3>
+              <p>Дата: 1 июня 2025, Нью-Йорк</p>
+              <p>Представление работ художников со всего мира.</p>
+              <a
+                href="about.html"
+                class="btn btn-primary btn-sm"
+                >Узнать больше</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Раздел блогов (с модальным окном) -->
+      <section id="blog" class="section section-alt">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Блог</h2>
+            <p class="section-description">
+              Читайте статьи о творчестве, искусстве и вдохновении
+            </p>
+          </div>
+          <div id="blog-grid" class="blog-grid"></div>
+        </div>
+      </section>
+
+      <!-- Присоединяйтесь к сообществу -->
+      <section class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">
+              Присоединяйтесь к нашему творческому сообществу
+            </h2>
+            <p class="section-description">
+              Загружайте свои работы, общайтесь с другими художниками, получайте
+              отзывы и развивайте свое творческое портфолио.
+            </p>
+          </div>
+          <div class="two-columns">
+            <div class="column">
+              <div class="button-group">
+                <a href="register.html" class="btn btn-primary btn-lg">
+                  Создать аккаунт
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="about.html" class="btn btn-outline btn-lg">
+                  Узнать больше
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+            <div class="column">
+              <div class="features-list">
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fas fa-upload"></i></div>
+                  <span class="feature-text">Неограниченные загрузки</span>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fas fa-users"></i></div>
+                  <span class="feature-text">Связь с художниками</span>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fas fa-user"></i></div>
+                  <span class="feature-text">Персонализированный профиль</span>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="fas fa-handshake"></i>
+                  </div>
+                  <span class="feature-text">Совместные проекты</span>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                  </div>
+                  <span class="feature-text">Подробная аналитика</span>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                  </div>
+                  <span class="feature-text">Отзывы сообщества</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container container">
+        <div class="copyright">
+          <a href="index.html" class="logo">
+            <span class="logo-text">Art Oasis</span>
+          </a>
+          <p>
+            © <span id="current-year"></span> Art Oasis. Все права защищены.
+          </p>
+        </div>
+        <div class="footer-right">
+          <a href="about.html" class="footer-link">Условия</a>
+          <a href="about.html" class="footer-link">Конфиденциальность</a>
+          <a href="about.html" class="footer-link">Контакты</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Artwork Card Template -->
+    <template id="artwork-card-template">
+      <div class="artwork-card">
+        <div class="artwork-image-container">
+          <img class="artwork-image" src="" alt="" />
+          <div class="artwork-overlay">
+            <div class="artwork-artist">
+              <div class="artist-avatar">
+                <img class="avatar-image" src="" alt="" />
+              </div>
+              <a class="artist-name artist-link" href=""></a>
+            </div>
+            <a class="artwork-title artwork-link" href=""></a>
+            <div class="artwork-tags"></div>
+            <div class="artwork-featured">Избранное</div>
+          </div>
+        </div>
+        <div class="artwork-content">
+          <h3 class="artwork-name"><a class="artwork-link" href=""></a></h3>
+          <p class="artwork-artist-name">
+            от <a class="artist-link" href=""></a>
+          </p>
+        </div>
+        <div class="artwork-comments">
+          <ul class="artwork-comments__list" id="comments-list"></ul>
+          <input
+            class="artwork-comments__input"
+            name=""
+            id=""
+            type="text"
+            placeholder="write a comment"
+          />
+        </div>
+        <div class="artwork-footer">
+          <div class="artwork-stats">
+            <div class="stat">
+              <i class="far fa-heart"></i> <span class="like-count"></span>
+            </div>
+            <button class="artwork-action comment-button">
+              <i class="far fa-comment"></i>
+              <span class="comment-count" style="margin-left: 5px"></span>
+            </button>
+          </div>
+          <div class="artwork-actions">
+            <button class="artwork-action like-button">
+              <i class="far fa-heart"></i>
+            </button>
+            <button class="artwork-action save-button">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <button class="artwork-action share-button">
+              <i class="fas fa-share"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Artist Card Template -->
+    <template id="artist-card-template">
+      <div class="artist-card">
+        <div class="artist-content">
+          <div class="artist-avatar">
+            <img class="avatar-image" src="" alt="" />
+          </div>
+          <h3 class="artist-name"><a class="artist-link" href=""></a></h3>
+          <span class="artist-specialty"></span>
+          <p class="artist-bio"></p>
+          <div class="artist-stats">
+            <div class="stat">
+              <i class="fas fa-palette"></i> <span class="artwork-count"></span>
+            </div>
+            <div class="stat">
+              <i class="fas fa-users"></i> <span class="follower-count"></span>
+            </div>
+          </div>
+        </div>
+        <div class="artist-footer">
+          <a class="view-profile-button btn btn-ghost" href=""
+            >Просмотр профиля</a
+          >
+          <button class="follow-button btn btn-sm"></button>
+        </div>
+      </div>
+    </template>
+
+    <!-- Blog Card Template -->
+    <template id="blog-card-template">
+      <div class="blog-card">
+        <h3 class="blog-title"></h3>
+        <p class="blog-preview"></p>
+        <a href="#" class="btn btn-ghost blog-link">Читать</a>
+      </div>
+    </template>
+
+    <div id="blog-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title"></h3>
+          <button class="modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-layout">
+            <div class="modal-image">
+              <img src="" alt="" class="modal-image-content" />
+            </div>
+            <div class="modal-text">
+              <p class="modal-content-text"></p>
+              <div class="comments-list"></div>
+              <div class="comment-form">
+                <textarea
+                  class="form-textarea"
+                  placeholder="Добавить комментарий..."
+                ></textarea>
+                <button class="btn btn-primary btn-sm">Отправить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("ArtOasis-user"));
+      const header_authorize = document.querySelector(
+        ".header__profile-controls"
+      );
+      const exit = document.querySelector("#exit");
+
+      exit.addEventListener("click", () => {
+        localStorage.removeItem("ArtOasis-token");
+        localStorage.removeItem("ArtOasis-user");
+        window.location.reload();
+      });
+
+      const register_btn = document.querySelector("#register-btn");
+
+      if (localStorage.getItem("ArtOasis-token")) {
+        header_authorize.style.display = "none";
+        register_btn.style.display = "none";
+      } else {
+        exit.style.display = "none";
+      }
+
+      const name_node = document.querySelector(".header__profile-name");
+      name_node.innerHTML = user?.name;
+      name_node.href = `profile.html?id=${user.id}`;
+    </script>
+
+    <script src="./scripts/unauthorized.js"></script>
+    <script src="./scripts/setFile.js"></script>
+    <script src="./scripts/request.js"></script>
+    <script src="./scripts/service.js"></script>
+    <script src="./scripts/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+<script type="text/javascript">
+  var gk_isXlsx = false;
+  var gk_xlsxFileLookup = {};
+  var gk_fileData = {};
+  function filledCell(cell) {
+    return cell !== "" && cell != null;
+  }
+  function loadFileData(filename) {
+    if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+      try {
+        var workbook = XLSX.read(gk_fileData[filename], { type: "base64" });
+        var firstSheetName = workbook.SheetNames[0];
+        var worksheet = workbook.Sheets[firstSheetName];
+
+        // Convert sheet to JSON to filter blank rows
+        var jsonData = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          blankrows: false,
+          defval: "",
+        });
+        // Filter out blank rows (rows where all cells are empty, null, or undefined)
+        var filteredData = jsonData.filter((row) => row.some(filledCell));
+
+        // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+        var headerRowIndex = filteredData.findIndex(
+          (row, index) =>
+            row.filter(filledCell).length >=
+            filteredData[index + 1]?.filter(filledCell).length
+        );
+        // Fallback
+        if (headerRowIndex === -1 || headerRowIndex > 25) {
+          headerRowIndex = 0;
+        }
+
+        // Convert filtered JSON back to CSV
+        var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+        csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+        return csv;
+      } catch (e) {
+        console.error(e);
+        return "";
+      }
+    }
+    return gk_fileData[filename] || "";
+  }
+</script>
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Работы - Art Oasis</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="app-container">
+    <!-- Header -->
+    <header id="main-header" class="header">
+      <div class="header-container container">
+        <div class="header-left">
+          <a href="index.html" class="logo">
+            <span class="logo-text">Art Oasis</span>
+          </a>
+          <nav class="main-nav">
+            <a href="artworks.html" class="nav-link">Работы</a>
+            <a href="index.html#events" class="nav-link">Мероприятия</a>
+            <a href="artists.html" class="nav-link">Художники</a>
+            <a href="index.html#meetings" class="nav-link">Встречи</a>
+            <a href="index.html#blog" class="nav-link">Блог</a>
+            <a href="about.html" class="nav-link">О нас</a>
+          </nav>
+        </div>
+        <div class="header-right">
+          <button id="theme-toggle" class="theme-toggle">
+            <i class="fas fa-sun"></i>
+          </button>
+          <div class="header__profile-controls">
+            <a href="login.html" class="btn btn-outline">Войти</a>
+            <a href="register.html" class="btn btn-primary">Регистрация</a>
+          </div>
+          <a class="header__profile-name">name</a>
+          <button id="exit" style="margin-left: 10px">
+            <img
+              width="25px"
+              src="https://img.icons8.com/?size=100&id=61022&format=png&color=CD1010"
+              alt=""
+            />
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <section class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Все работы</h2>
+            <p class="section-description">
+              Откройте для себя коллекцию художественных работ нашего сообщества
+            </p>
+          </div>
+          <div id="artwork-grid" class="artwork-grid"></div>
+          <div id="no-results" class="no-results" style="display: none">
+            <p>Не найдено работ, соответствующих вашим критериям</p>
+            <button id="reset-filters" class="btn btn-ghost">
+              Сбросить фильтры
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container container">
+        <div class="copyright">
+          <a href="index.html" class="logo">
+            <span class="logo-text">Art Oasis</span>
+          </a>
+          <p>
+            © <span id="current-year"></span> Art Oasis. Все права защищены.
+          </p>
+        </div>
+        <div class="footer-right">
+          <a href="#" class="footer-link">Условия</a>
+          <a href="#" class="footer-link">Конфиденциальность</a>
+          <a href="#" class="footer-link">Контакты</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Artwork Card Template -->
+    <template id="artwork-card-template">
+      <div class="artwork-card">
+        <div class="artwork-image-container">
+          <img class="artwork-image" src="" alt="" />
+          <div class="artwork-overlay">
+            <div class="artwork-artist">
+              <div class="artist-avatar">
+                <img class="avatar-image" src="" alt="" />
+              </div>
+              <a class="artist-name artist-link" href=""></a>
+            </div>
+            <a class="artwork-title artwork-link" href=""></a>
+            <div class="artwork-tags"></div>
+            <div class="artwork-featured">Избранное</div>
+          </div>
+        </div>
+        <div class="artwork-content">
+          <h3 class="artwork-name"><a class="artwork-link" href=""></a></h3>
+          <p class="artwork-artist-name">
+            от <a class="artist-link" href=""></a>
+          </p>
+        </div>
+        <div class="artwork-comments">
+          <ul class="artwork-comments__list" id="comments-list"></ul>
+          <input
+            class="artwork-comments__input"
+            name=""
+            id=""
+            type="text"
+            placeholder="write a comment"
+          />
+        </div>
+        <div class="artwork-footer">
+          <div class="artwork-stats">
+            <div class="stat">
+              <i class="far fa-heart"></i> <span class="like-count"></span>
+            </div>
+            <button class="artwork-action comment-button">
+              <i class="far fa-comment"></i>
+              <span class="comment-count" style="margin-left: 5px"></span>
+            </button>
+          </div>
+          <div class="artwork-actions">
+            <button class="artwork-action like-button">
+              <i class="far fa-heart"></i>
+            </button>
+            <button class="artwork-action save-button">
+              <i class="far fa-bookmark"></i>
+            </button>
+            <button class="artwork-action share-button">
+              <i class="fas fa-share"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("ArtOasis-user"));
+      const header_authorize = document.querySelector(
+        ".header__profile-controls"
+      );
+      const exit = document.querySelector("#exit");
+
+      exit.addEventListener("click", () => {
+        localStorage.removeItem("ArtOasis-token");
+        localStorage.removeItem("ArtOasis-user");
+        window.location.reload();
+      });
+
+      if (localStorage.getItem("ArtOasis-token")) {
+        header_authorize.style.display = "none";
+      } else {
+        exit.style.display = "none";
+      }
+
+      const name_node = document.querySelector(".header__profile-name");
+      name_node.innerHTML = user?.name;
+      name_node.href = `profile.html?id=${user.id}`;
+    </script>
+
+    <script src="./scripts/arts.js"></script>
+    <script src="./scripts/unauthorized.js"></script>
+    <script src="./scripts/request.js"></script>
+    <script src="./scripts/setFile.js"></script>
+    <script src="./scripts/service.js"></script>
+    <script src="./scripts/scriptartworks.js"></script>
+  </body>
+</html>
